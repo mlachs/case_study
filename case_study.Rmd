@@ -1,0 +1,55 @@
+---
+title: "Case Study"
+author: "Miriam Lachs"
+date: "2024-10-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(p8105.datasets)
+library(tidyverse)
+data(nyc_airbnb)
+library(leaflet)
+```
+
+```{r}
+
+```
+
+## Brainstorm Questions
+
+* where are the max and min air bnb prices
+  * What are average prices
+  * what factors affect prices
+* where are prices going uup and down over time 
+* what the replationship between number of reviews and average reviews
+* does room type affect availbility 
+* what the location of the unit 
+  * what areas are popular 
+* Are there repeat hosts
+
+```{r}
+nyc_airbnb %>% 
+  group_by(neighbourhood_group) %>% 
+  summarise(mean_price=mean(price),mean_avalibility=mean(availability_365))
+
+nyc_airbnb %>% 
+  ggplot(aes(x=price,y=availability_365,colour = neighbourhood_group))+
+  geom_point()
+
+nyc_airbnb %>% 
+  group_by(neighbourhood_group,room_type) %>% 
+  summarise(mean_price=mean(price)) %>% 
+  ggplot(aes(x=room_type,y=mean_price,colour = neighbourhood_group))+geom_point()+facet_grid(~neighbourhood_group)
+```
+
+
+```{r}
+nyc_airbnb %>%
+  filter(neighbourhood_group=="Manhattan",price<1000  ) %>% 
+  slice(1:10) %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addMarkers(~lat,~long)
+```
+
